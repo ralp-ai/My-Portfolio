@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gymgorithm - Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.css">
+  <style>
+    :root {
+      --primary: #00d9ff;
+      --primary-dark: #00aacc;
+      --secondary: #2ed573;
+      --danger: #ff4757;
+      --warning: #ffa502;
+      --dark: #141e30;
+      --darker: #0f172a;
+      --light: #f8fafc;
+      --gray: #94a3b8;
+      --dark-gray: #334155;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: var(--darker);
+      color: var(--light);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header Styles */
+    header {
+      padding: 15px 20px;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo i {
+      font-size: 28px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .notification-btn, .settings-btn {
+      background: none;
+      border: none;
+      color: var(--light);
+      font-size: 20px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.3s;
+    }
+
+    .notification-btn:hover, .settings-btn:hover {
+      color: var(--primary);
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--danger);
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .user-name {
+      font-weight: 600;
+    }
+
+    .user-email {
+      font-size: 12px;
+      color: var(--gray);
+    }
+
+    /* Main Layout */
+    .app-container {
+      display: flex;
+      flex: 1;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: 250px;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      padding: 20px 0;
+      height: calc(100vh - 60px);
+      position: sticky;
+      top: 60px;
+      transition: all 0.3s;
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-menu {
+      list-style: none;
+    }
+
+    .menu-item {
+      margin-bottom: 5px;
+    }
+
+    .menu-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: var(--light);
+      text-decoration: none;
+      transition: all 0.3s;
+      font-weight: 500;
+    }
+
+    .menu-link:hover, .menu-link.active {
+      background: rgba(0, 217, 255, 0.1);
+      color: var(--primary);
+    }
+
+    .menu-link i {
+      font-size: 18px;
+      width: 24px;
+      text-align: center;
+    }
+
+    .menu-link.active {
+      border-left: 3px solid var(--primary);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 30px;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .page-actions {
+      display: flex;
+      gap: 15px;
+    }
+
+    /* Dashboard Widgets */
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      padding: 30px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .welcome-banner::after {
+      content: '';
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 200px;
+      height: 200px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+    }
+
+    .welcome-banner h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .welcome-banner p {
+      opacity: 0.9;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 15px;
+      transition: all 0.3s;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .stat-card h3 {
+      font-size: 14px;
+      margin-bottom: 10px;
+      color: var(--gray);
+    }
+
+    .stat-card .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .stat-card .stat-change {
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .stat-card .stat-change.positive {
+      color: var(--secondary);
+    }
+
+    .stat-card .stat-change.negative {
+      color: var(--danger);
+    }
+
+    /* Workout Plan */
+    .workout-plan {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 25px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .workout-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .workout-title {
+      font-size: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .workout-title i {
+      color: var(--primary);
+    }
+
+    .workout-day {
+      margin-bottom: 25px;
+    }
+
+    .day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .day-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .day-date {
+      font-size: 14px;
+      color: var(--gray);
+    }
+
+    .exercise-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .exercise-card {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 15px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .exercise-card:hover {
+      background: rgba(0, 217, 255, 0.05);
+      border-color: rgba(0, 217, 255, 0.2);
+    }
+
+    .exercise-info h4 {
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .exercise-info p {
+      font-size: 14px;
+      color: var(--gray);
+    }
+
+    .exercise-stats {
+      text-align: right;
+    }
+
+    .exercise-stats p {
+      font-size: 14px;
+      color: var(--gray);
+    }
+
+    .exercise-stats .last-performance {
+      color: var(--light);
+      font-weight: 500;
+    }
+
+    /* Progress Section */
+    .progress-section {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 25px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .progress-header {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .progress-title {
+      font-size: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .progress-title i {
+      color: var(--primary);
+    }
+
+    .progress-period {
+      display: flex;
+      gap: 10px;
+    }
+
+    .period-btn {
+      background: none;
+      border: 1px solid var(--dark-gray);
+      color: var(--light);
+      padding: 5px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .period-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: var(--darker);
+    }
+
+    .chart-container {
+      height: 300px;
+      margin-bottom: 20px;
+    }
+
+    .progress-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+    }
+
+    .metric-card {
+      background: rgba(0, 217, 255, 0.05);
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 217, 255, 0.1);
+    }
+
+    .metric-card h4 {
+      font-size: 14px;
+      margin-bottom: 5px;
+      color: var(--gray);
+    }
+
+    .metric-card p {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    /* Nutrition Section */
+    .nutrition-section {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 25px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nutrition-header {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nutrition-title {
+      font-size: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nutrition-title i {
+      color: var(--primary);
+    }
+
+    .nutrition-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .nutrition-goal {
+      background: rgba(0, 217, 255, 0.05);
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 217, 255, 0.1);
+      text-align: center;
+    }
+
+    .nutrition-goal h4 {
+      font-size: 14px;
+      margin-bottom: 5px;
+      color: var(--gray);
+    }
+
+    .nutrition-goal .goal-value {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .nutrition-goal .goal-progress {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .nutrition-goal .goal-progress-bar {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 3px;
+    }
+
+    .nutrition-meals {
+      margin-top: 20px;
+    }
+
+    .meal-card {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .meal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .meal-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .meal-calories {
+      font-size: 14px;
+      color: var(--light);
+      font-weight: 500;
+    }
+
+    .meal-foods {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .food-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+    }
+
+    .food-item:last-child {
+      border-bottom: none;
+    }
+
+    .food-name {
+      font-size: 14px;
+    }
+
+    .food-macros {
+      font-size: 12px;
+      color: var(--gray);
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 10px 20px;
+      background: var(--primary);
+      border: none;
+      border-radius: 8px;
+      color: var(--darker);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-outline:hover {
+      background: rgba(0, 217, 255, 0.1);
+      color: var(--primary);
+    }
+
+    .btn-sm {
+      padding: 8px 15px;
+      font-size: 13px;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #e04040;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+      background: var(--darker);
+      margin: 5% auto;
+      padding: 30px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 24px;
+      color: var(--gray);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .modal-close:hover {
+      color: var(--light);
+    }
+
+    .modal-title {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: var(--light);
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(0, 217, 255, 0.2);
+    }
+
+    /* Loading States */
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 220px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .app-container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        padding: 15px;
+      }
+
+      .sidebar-menu {
+        display: flex;
+        overflow-x: auto;
+        padding-bottom: 10px;
+      }
+
+      .menu-item {
+        margin-bottom: 0;
+        margin-right: 10px;
+      }
+
+      .menu-link {
+        padding: 10px 15px;
+        white-space: nowrap;
+      }
+
+      .menu-link.active {
+        border-left: none;
+        border-bottom: 3px solid var(--primary);
+      }
+
+      .main-content {
+        padding: 20px;
+      }
+
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+
+      .page-actions {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .welcome-banner {
+        padding: 20px;
+      }
+
+      .workout-plan,
+      .progress-section,
+      .nutrition-section {
+        padding: 20px;
+      }
+
+      .progress-metrics,
+      .nutrition-summary {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .modal-content {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">
+      <i class="fas fa-dumbbell"></i>
+      <span>Gymgorithm</span>
+    </a>
+    <div class="header-actions">
+      <button class="notification-btn">
+        <i class="fas fa-bell"></i>
+        <span class="notification-badge">3</span>
+      </button>
+      <button class="settings-btn">
+        <i class="fas fa-cog"></i>
+      </button>
+      <div class="user-menu" id="userMenu">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div class="user-info">
+          <div class="user-name" id="userName">Loading...</div>
+          <div class="user-email" id="userEmail">user@example.com</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-container">
+    <aside class="sidebar">
+      <ul class="sidebar-menu">
+        <li class="menu-item">
+          <a href="dashboard.html" class="menu-link active">
+            <i class="fas fa-home"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="workouts.html" class="menu-link">
+            <i class="fas fa-dumbbell"></i>
+            <span>Workouts</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="progress.html" class="menu-link">
+            <i class="fas fa-chart-line"></i>
+            <span>Progress</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="nutrition.html" class="menu-link">
+            <i class="fas fa-utensils"></i>
+            <span>Nutrition</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="chatbot.html" class="menu-link">
+            <i class="fas fa-robot"></i>
+            <span>AI Chat Bot</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="settings.html" class="menu-link">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <main class="main-content">
+      <div class="page-header">
+        <h1 class="page-title">Dashboard</h1>
+        <div class="page-actions">
+          <button class="btn btn-sm">
+            <i class="fas fa-plus"></i>
+            <span>New Workout</span>
+          </button>
+          <button class="btn btn-outline btn-sm">
+            <i class="fas fa-calendar"></i>
+            <span>Calendar</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="welcome-banner">
+        <h2 id="welcomeMessage">Welcome back, User!</h2>
+        <p id="nextWorkout">Your next workout is scheduled for tomorrow at 6:00 PM</p>
+      </div>
+
+      <div class="stats-grid" id="statsGrid">
+        <!-- Stats will be populated by JavaScript -->
+      </div>
+
+      <section class="workout-plan">
+        <div class="workout-header">
+          <h2 class="workout-title">
+            <i class="fas fa-dumbbell"></i>
+            <span>Today's Workout Plan</span>
+          </h2>
+          <button class="btn btn-sm" id="startWorkoutBtn">
+            <i class="fas fa-play"></i>
+            <span>Start Workout</span>
+          </button>
+        </div>
+
+        <div class="workout-day">
+          <div class="day-header">
+            <h3 class="day-title">Full Body Workout</h3>
+            <span class="day-date">Today, June 15</span>
+          </div>
+          <div class="exercise-list" id="exerciseList">
+            <!-- Exercises will be populated by JavaScript -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Nutrition Section Added -->
+      <section class="nutrition-section">
+        <div class="nutrition-header">
+          <h2 class="nutrition-title">
+            <i class="fas fa-utensils"></i>
+            <span>Today's Nutrition</span>
+          </h2>
+          <button class="btn btn-sm btn-outline">
+            <i class="fas fa-plus"></i>
+            <span>Add Meal</span>
+          </button>
+        </div>
+
+        <div class="nutrition-summary">
+          <div class="nutrition-goal">
+            <h4>Calories</h4>
+            <div class="goal-value">1,850/2,500</div>
+            <div class="goal-progress">
+              <div class="goal-progress-bar" style="width: 74%"></div>
+            </div>
+          </div>
+          <div class="nutrition-goal">
+            <h4>Protein</h4>
+            <div class="goal-value">145/180g</div>
+            <div class="goal-progress">
+              <div class="goal-progress-bar" style="width: 80%"></div>
+            </div>
+          </div>
+          <div class="nutrition-goal">
+            <h4>Carbs</h4>
+            <div class="goal-value">210/300g</div>
+            <div class="goal-progress">
+              <div class="goal-progress-bar" style="width: 70%"></div>
+            </div>
+          </div>
+          <div class="nutrition-goal">
+            <h4>Fats</h4>
+            <div class="goal-value">65/80g</div>
+            <div class="goal-progress">
+              <div class="goal-progress-bar" style="width: 81%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="nutrition-meals">
+          <div class="meal-card">
+            <div class="meal-header">
+              <h3 class="meal-title">Breakfast</h3>
+              <span class="meal-calories">620 kcal</span>
+            </div>
+            <div class="meal-foods">
+              <div class="food-item">
+                <span class="food-name">Oatmeal with Banana</span>
+                <span class="food-macros">P: 12g, C: 75g, F: 5g</span>
+              </div>
+              <div class="food-item">
+                <span class="food-name">Greek Yogurt</span>
+                <span class="food-macros">P: 20g, C: 10g, F: 2g</span>
+              </div>
+              <div class="food-item">
+                <span class="food-name">Almonds</span>
+                <span class="food-macros">P: 6g, C: 8g, F: 14g</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="meal-card">
+            <div class="meal-header">
+              <h3 class="meal-title">Lunch</h3>
+              <span class="meal-calories">780 kcal</span>
+            </div>
+            <div class="meal-foods">
+              <div class="food-item">
+                <span class="food-name">Grilled Chicken Breast</span>
+                <span class="food-macros">P: 52g, C: 0g, F: 6g</span>
+              </div>
+              <div class="food-item">
+                <span class="food-name">Brown Rice</span>
+                <span class="food-macros">P: 5g, C: 45g, F: 2g</span>
+              </div>
+              <div class="food-item">
+                <span class="food-name">Steamed Vegetables</span>
+                <span class="food-macros">P: 3g, C: 12g, F: 0g</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="meal-card">
+            <div class="meal-header">
+              <h3 class="meal-title">Post-Workout</h3>
+              <span class="meal-calories">450 kcal</span>
+            </div>
+            <div class="meal-foods">
+              <div class="food-item">
+                <span class="food-name">Protein Shake</span>
+                <span class="food-macros">P: 30g, C: 25g, F: 3g</span>
+              </div>
+              <div class="food-item">
+                <span class="food-name">Apple</span>
+                <span class="food-macros">P: 0g, C: 25g, F: 0g</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="progress-section">
+        <div class="progress-header">
+          <h2 class="progress-title">
+            <i class="fas fa-chart-line"></i>
+            <span>Your Progress</span>
+          </h2>
+          <div class="progress-period">
+            <button class="period-btn active">Week</button>
+            <button class="period-btn">Month</button>
+            <button class="period-btn">Year</button>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="progressChart"></canvas>
+        </div>
+        <div class="progress-metrics" id="progressMetrics">
+          <!-- Metrics will be populated by JavaScript -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- User Profile Modal -->
+  <div class="modal" id="profileModal">
+    <div class="modal-content">
+      <span class="modal-close">&times;</span>
+      <h2 class="modal-title">Edit Profile</h2>
+      <form id="profileForm">
+        <div class="form-group">
+          <label for="profileName">Full Name</label>
+          <input type="text" id="profileName" required>
+        </div>
+        <div class="form-group">
+          <label for="profileEmail">Email</label>
+          <input type="email" id="profileEmail" required>
+        </div>
+        <div class="form-group">
+          <label for="profileAge">Age</label>
+          <input type="number" id="profileAge" min="13" max="120">
+        </div>
+        <div class="form-group">
+          <label for="profileGender">Gender</label>
+          <select id="profileGender">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+            <option value="prefer-not-to-say">Prefer not to say</option>
+          </select>
+        </div>
+        <button type="submit" class="btn">
+          <span id="saveProfileText">Save Changes</span>
+          <div id="profileSpinner" class="spinner"></div>
+        </button>
+        <!-- Added Logout Button -->
+        <button type="button" class="btn btn-danger" id="logoutBtn" style="margin-top: 15px; width: 100%;">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Notification Modal -->
+  <div class="modal" id="notificationModal">
+    <div class="modal-content">
+      <span class="modal-close">&times;</span>
+      <h2 class="modal-title">Notifications</h2>
+      <div class="notification-list" id="notificationList">
+        <!-- Notifications will be populated by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+  <script type="module">
+    import { auth, db, analytics } from './firebase-config.js';
+    import { 
+      onAuthStateChanged, 
+      signOut,
+      updateEmail,
+      updateProfile
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { 
+      doc, 
+      getDoc,
+      updateDoc,
+      collection,
+      query,
+      where,
+      getDocs,
+      onSnapshot
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // DOM Elements
+    const userMenu = document.getElementById('userMenu');
+    const userAvatar = document.getElementById('userAvatar');
+    const userName = document.getElementById('userName');
+    const userEmail = document.getElementById('userEmail');
+    const welcomeMessage = document.getElementById('welcomeMessage');
+    const nextWorkout = document.getElementById('nextWorkout');
+    const statsGrid = document.getElementById('statsGrid');
+    const exerciseList = document.getElementById('exerciseList');
+    const progressMetrics = document.getElementById('progressMetrics');
+    const startWorkoutBtn = document.getElementById('startWorkoutBtn');
+    const profileModal = document.getElementById('profileModal');
+    const profileForm = document.getElementById('profileForm');
+    const notificationModal = document.getElementById('notificationModal');
+    const notificationBtn = document.querySelector('.notification-btn');
+    const settingsBtn = document.querySelector('.settings-btn');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    // Chart initialization
+    let progressChart;
+    const ctx = document.getElementById('progressChart').getContext('2d');
+
+    // Check auth state
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // User is signed in
+        displayUserData(user);
+        await loadUserData(user.uid);
+        setupRealTimeUpdates(user.uid);
+      } else {
+        // User is signed out
+        window.location.href = 'login.html';
+      }
+    });
+
+    // Display user data
+    function displayUserData(user) {
+      const displayName = user.displayName || 'User';
+      const email = user.email || 'user@example.com';
+      
+      userName.textContent = displayName;
+      userEmail.textContent = email;
+      userAvatar.textContent = displayName.charAt(0).toUpperCase();
+      welcomeMessage.textContent = `Welcome back, ${displayName.split(' ')[0]}!`;
+      
+      // Pre-fill profile form
+      if (profileForm) {
+        document.getElementById('profileName').value = displayName;
+        document.getElementById('profileEmail').value = email;
+      }
+    }
+
+    // Load user data from Firestore
+    async function loadUserData(userId) {
+      try {
+        const userDoc = await getDoc(doc(db, 'users', userId));
+        
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          updateDashboard(userData);
+          
+          // Pre-fill profile form with additional data
+          if (profileForm && userData.profile) {
+            document.getElementById('profileAge').value = userData.profile.age || '';
+            document.getElementById('profileGender').value = userData.profile.gender || 'male';
+          }
+        }
+      } catch (error) {
+        console.error('Error loading user data:', error);
+      }
+    }
+
+    // Update dashboard with user data
+    function updateDashboard(userData) {
+      // Update stats grid
+      statsGrid.innerHTML = `
+        <div class="stat-card">
+          <h3>Current Streak</h3>
+          <div class="stat-value">${userData.streak || 0} days</div>
+          <div class="stat-change ${userData.streakChange >= 0 ? 'positive' : 'negative'}">
+            <i class="fas fa-${userData.streakChange >= 0 ? 'arrow-up' : 'arrow-down'}"></i>
+            ${Math.abs(userData.streakChange || 0)} days
+          </div>
+        </div>
+        <div class="stat-card">
+          <h3>Workouts This Week</h3>
+          <div class="stat-value">${userData.workoutsThisWeek || 0}/5</div>
+          <div class="stat-change ${userData.workoutsChange >= 0 ? 'positive' : 'negative'}">
+            <i class="fas fa-${userData.workoutsChange >= 0 ? 'arrow-up' : 'arrow-down'}"></i>
+            ${Math.abs(userData.workoutsChange || 0)}
+          </div>
+        </div>
+        <div class="stat-card">
+          <h3>Weight Progress</h3>
+          <div class="stat-value">${userData.currentWeight || 0} kg</div>
+          <div class="stat-change ${userData.weightChange >= 0 ? 'positive' : 'negative'}">
+            <i class="fas fa-${userData.weightChange >= 0 ? 'arrow-up' : 'arrow-down'}"></i>
+            ${Math.abs(userData.weightChange || 0)} kg
+          </div>
+        </div>
+        <div class="stat-card">
+          <h3>Muscle Gain</h3>
+          <div class="stat-value">${userData.muscleMass || 0}%</div>
+          <div class="stat-change ${userData.muscleChange >= 0 ? 'positive' : 'negative'}">
+            <i class="fas fa-${userData.muscleChange >= 0 ? 'arrow-up' : 'arrow-down'}"></i>
+            ${Math.abs(userData.muscleChange || 0)}%
+          </div>
+        </div>
+      `;
+
+      // Update workout plan
+      if (userData.currentWorkoutPlan) {
+        exerciseList.innerHTML = userData.currentWorkoutPlan.exercises.map(exercise => `
+          <div class="exercise-card">
+            <div class="exercise-info">
+              <h4>${exercise.name}</h4>
+              <p>${exercise.sets} sets × ${exercise.reps} reps</p>
+            </div>
+            <div class="exercise-stats">
+              <p class="last-performance">${exercise.lastPerformance || 'Not recorded'}</p>
+              <p>${exercise.difficulty || ''}</p>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        exerciseList.innerHTML = '<p>No workout plan assigned yet.</p>';
+      }
+
+      // Update progress metrics
+      progressMetrics.innerHTML = `
+        <div class="metric-card">
+          <h4>Strength Gain</h4>
+          <p>+${userData.strengthGain || 0}%</p>
+        </div>
+        <div class="metric-card">
+          <h4>Workout Consistency</h4>
+          <p>${userData.consistency || 0}%</p>
+        </div>
+        <div class="metric-card">
+          <h4>BMI Change</h4>
+          <p>${userData.bmiChange || 0}</p>
+        </div>
+        <div class="metric-card">
+          <h4>Recovery Rate</h4>
+          <p>${userData.recoveryRate || 0}%</p>
+        </div>
+      `;
+
+      // Initialize or update chart
+      updateProgressChart(userData.progressData);
+    }
+
+    // Update progress chart
+    function updateProgressChart(progressData = {}) {
+      const defaultData = {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [
+          {
+            label: 'Workout Intensity',
+            data: [3, 5, 4, 6, 4, 5, 2],
+            borderColor: '#00d9ff',
+            backgroundColor: 'rgba(0, 217, 255, 0.1)',
+            tension: 0.4,
+            fill: true
+          },
+          {
+            label: 'Calories Burned',
+            data: [250, 300, 280, 350, 320, 400, 150],
+            borderColor: '#2ed573',
+            backgroundColor: 'rgba(46, 213, 115, 0.1)',
+            tension: 0.4,
+            fill: true
+          }
+        ]
+      };
+
+      const chartData = progressData.labels ? progressData : defaultData;
+
+      if (progressChart) {
+        progressChart.data = chartData;
+        progressChart.update();
+      } else {
+        progressChart = new Chart(ctx, {
+          type: 'line',
+          data: chartData,
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'top',
+                labels: {
+                  color: '#f8fafc'
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: {
+                  color: 'rgba(255, 255, 255, 0.1)'
+                },
+                ticks: {
+                  color: '#f8fafc'
+                }
+              },
+              y: {
+                grid: {
+                  color: 'rgba(255, 255, 255, 0.1)'
+                },
+                ticks: {
+                  color: '#f8fafc'
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    // Setup real-time updates
+    function setupRealTimeUpdates(userId) {
+      // Listen for user data changes
+      const userRef = doc(db, 'users', userId);
+      onSnapshot(userRef, (doc) => {
+        if (doc.exists()) {
+          updateDashboard(doc.data());
+        }
+      });
+
+      // Listen for notifications
+      const notificationsRef = collection(db, 'notifications');
+      const q = query(notificationsRef, where('userId', '==', userId), where('read', '==', false));
+      onSnapshot(q, (querySnapshot) => {
+        const notifications = [];
+        querySnapshot.forEach((doc) => {
+          notifications.push(doc.data());
+        });
+        updateNotifications(notifications);
+      });
+    }
+
+    // Update notifications
+    function updateNotifications(notifications) {
+      const notificationList = document.getElementById('notificationList');
+      const notificationBadge = document.querySelector('.notification-badge');
+      
+      if (notificationList) {
+        notificationList.innerHTML = notifications.length > 0 
+          ? notifications.map(notif => `
+              <div class="notification-item">
+                <h4>${notif.title}</h4>
+                <p>${notif.message}</p>
+                <small>${new Date(notif.timestamp?.toDate()).toLocaleString()}</small>
+              </div>
+            `).join('')
+          : '<p>No new notifications</p>';
+      }
+      
+      if (notificationBadge) {
+        notificationBadge.textContent = notifications.length;
+        notificationBadge.style.display = notifications.length > 0 ? 'flex' : 'none';
+      }
+    }
+
+    // Event listeners
+    userMenu.addEventListener('click', () => {
+      profileModal.style.display = 'block';
+    });
+
+    notificationBtn.addEventListener('click', () => {
+      notificationModal.style.display = 'block';
+    });
+
+    settingsBtn.addEventListener('click', () => {
+      window.location.href = 'settings.html';
+    });
+
+    startWorkoutBtn.addEventListener('click', () => {
+      window.location.href = 'workout-session.html';
+    });
+
+    // Logout button event listener
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', async () => {
+        try {
+          await signOut(auth);
+          window.location.href = 'login.html';
+        } catch (error) {
+          console.error('Error signing out:', error);
+          alert('Failed to logout: ' + error.message);
+        }
+      });
+    }
+
+    // Close modals when clicking outside
+    window.addEventListener('click', (e) => {
+      if (e.target === profileModal) {
+        profileModal.style.display = 'none';
+      }
+      if (e.target === notificationModal) {
+        notificationModal.style.display = 'none';
+      }
+    });
+
+    // Close modals with close buttons
+    document.querySelectorAll('.modal-close').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.closest('.modal').style.display = 'none';
+      });
+    });
+
+    // Profile form submission
+    profileForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const saveBtn = profileForm.querySelector('button[type="submit"]');
+      const saveText = document.getElementById('saveProfileText');
+      const spinner = document.getElementById('profileSpinner');
+
+      // Show loading state
+      saveBtn.disabled = true;
+      saveText.textContent = 'Saving...';
+      spinner.style.display = 'inline-block';
+
+      try {
+        const name = document.getElementById('profileName').value;
+        const email = document.getElementById('profileEmail').value;
+        const age = document.getElementById('profileAge').value;
+        const gender = document.getElementById('profileGender').value;
+
+        // Update auth profile
+        await Promise.all([
+          updateProfile(user, { displayName: name }),
+          updateEmail(user, email)
+        ]);
+
+        // Update Firestore
+        await updateDoc(doc(db, 'users', user.uid), {
+          name: name,
+          email: email,
+          profile: {
+            age: age ? parseInt(age) : null,
+            gender: gender,
+            lastUpdated: new Date()
+          }
+        });
+
+        // Update UI
+        displayUserData(user);
+        profileModal.style.display = 'none';
+      } catch (error) {
+        console.error('Error updating profile:', error);
+        alert('Failed to update profile: ' + error.message);
+      } finally {
+        saveBtn.disabled = false;
+        saveText.textContent = 'Save Changes';
+        spinner.style.display = 'none';
+      }
+    });
+
+    // Period buttons
+    document.querySelectorAll('.period-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        // In a real app, you would fetch data for the selected period
+        // For now, we'll just update the chart with dummy data
+        const period = btn.textContent.toLowerCase();
+        updateChartForPeriod(period);
+      });
+    });
+
+    function updateChartForPeriod(period) {
+      // This would be replaced with actual data fetching in a real app
+      const dummyData = {
+        week: {
+          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          datasets: [
+            { data: [3, 5, 4, 6, 4, 5, 2] },
+            { data: [250, 300, 280, 350, 320, 400, 150] }
+          ]
+        },
+        month: {
+          labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+          datasets: [
+            { data: [4, 5, 4, 3] },
+            { data: [1200, 1500, 1400, 1100] }
+          ]
+        },
+        year: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          datasets: [
+            { data: [4, 4, 5, 5, 4, 4, 3, 5, 4, 5, 4, 3] },
+            { data: [5000, 4800, 5200, 5100, 4900, 5000, 4500, 5200, 5000, 5100, 4900, 4800] }
+          ]
+        }
+      };
+
+      progressChart.data.labels = dummyData[period].labels;
+      progressChart.data.datasets[0].data = dummyData[period].datasets[0].data;
+      progressChart.data.datasets[1].data = dummyData[period].datasets[1].data;
+      progressChart.update();
+    }
+  </script>
+</body>
+</html>

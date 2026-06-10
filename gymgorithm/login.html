@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Gymgorithm</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #141e30, #243b55);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .login-container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 40px;
+      border-radius: 15px;
+      width: 100%;
+      max-width: 450px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 28px;
+      color: #00d9ff;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 15px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #00d9ff;
+      box-shadow: 0 0 0 2px rgba(0, 217, 255, 0.2);
+    }
+
+    .password-container {
+      position: relative;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .remember-me input {
+      width: auto;
+    }
+
+    .forgot-password {
+      color: #00d9ff;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .forgot-password:hover {
+      text-decoration: underline;
+    }
+
+    .error-message {
+      color: #ff6b6b;
+      font-size: 14px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .btn {
+      padding: 15px;
+      background: #00d9ff;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 600;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn:hover {
+      background: #00aacc;
+      transform: translateY(-2px);
+    }
+
+    .btn:disabled {
+      background: #555;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .signup-link {
+      text-align: center;
+      margin-top: 25px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .signup-link a {
+      color: #00d9ff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 30px 20px;
+      }
+      
+      .options {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Welcome Back</h2>
+    <form id="login-form">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="john@example.com" required />
+        <div class="error-message" id="email-error"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-container">
+          <input type="password" id="password" placeholder="Enter your password" required />
+          <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+        </div>
+        <div class="error-message" id="password-error"></div>
+      </div>
+
+      <div class="options">
+        <div class="remember-me">
+          <input type="checkbox" id="remember" />
+          <label for="remember">Remember me</label>
+        </div>
+        <a href="#" class="forgot-password" id="forgot-password">Forgot password?</a>
+      </div>
+
+      <button class="btn" type="submit" id="submit-btn">
+        <span id="button-text">Login</span>
+        <div id="spinner" class="spinner"></div>
+      </button>
+    </form>
+    <div class="signup-link">
+      Don't have an account yet? <a href="signup.html">Sign Up</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, analytics } from './firebase-config.js';
+    import { signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const form = document.getElementById('login-form');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const togglePassword = document.getElementById('togglePassword');
+    const rememberCheckbox = document.getElementById('remember');
+    const forgotPasswordLink = document.getElementById('forgot-password');
+    const submitBtn = document.getElementById('submit-btn');
+    const buttonText = document.getElementById('button-text');
+    const spinner = document.getElementById('spinner');
+
+    // Password visibility toggle
+    togglePassword.addEventListener('click', () => {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      togglePassword.classList.toggle('fa-eye-slash');
+    });
+
+    // Load saved credentials if "Remember me" was checked
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedEmail = localStorage.getItem('gymgorithm_email');
+      const savedPassword = localStorage.getItem('gymgorithm_password');
+      
+      if (savedEmail && savedPassword) {
+        emailInput.value = savedEmail;
+        passwordInput.value = savedPassword;
+        rememberCheckbox.checked = true;
+      }
+    });
+
+    // Form validation
+    function showError(elementId, message) {
+      const errorElement = document.getElementById(elementId);
+      errorElement.textContent = message;
+      errorElement.style.display = 'block';
+    }
+
+    function hideError(elementId) {
+      const errorElement = document.getElementById(elementId);
+      errorElement.style.display = 'none';
+    }
+
+    function validateEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email);
+    }
+
+    // Form submission
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Reset errors
+      hideError('email-error');
+      hideError('password-error');
+
+      // Get values
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      const rememberMe = rememberCheckbox.checked;
+
+      // Validate
+      let isValid = true;
+
+      if (!validateEmail(email)) {
+        showError('email-error', 'Please enter a valid email');
+        isValid = false;
+      }
+
+      if (password.length < 6) {
+        showError('password-error', 'Password must be at least 6 characters');
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      // Show loading state
+      submitBtn.disabled = true;
+      buttonText.textContent = 'Logging in...';
+      spinner.style.display = 'block';
+
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        
+        // Save credentials if "Remember me" is checked
+        if (rememberMe) {
+          localStorage.setItem('gymgorithm_email', email);
+          localStorage.setItem('gymgorithm_password', password);
+        } else {
+          localStorage.removeItem('gymgorithm_email');
+          localStorage.removeItem('gymgorithm_password');
+        }
+
+        // Redirect to dashboard
+        window.location.href = 'dashboard.html';
+      } catch (error) {
+        console.error("Login error:", error);
+        
+        let errorMessage = "An error occurred. Please try again.";
+        switch(error.code) {
+          case 'auth/user-not-found':
+          case 'auth/wrong-password':
+            errorMessage = "Invalid email or password";
+            showError('password-error', errorMessage);
+            break;
+          case 'auth/too-many-requests':
+            errorMessage = "Too many attempts. Try again later or reset your password.";
+            showError('password-error', errorMessage);
+            break;
+          default:
+            alert(errorMessage);
+        }
+      } finally {
+        // Reset loading state
+        submitBtn.disabled = false;
+        buttonText.textContent = 'Login';
+        spinner.style.display = 'none';
+      }
+    });
+
+    // Forgot password
+    forgotPasswordLink.addEventListener('click', async (e) => {
+      e.preventDefault();
+      
+      const email = prompt("Please enter your email address to reset your password:");
+      if (!email) return;
+      
+      if (!validateEmail(email)) {
+        alert("Please enter a valid email address");
+        return;
+      }
+
+      try {
+        await sendPasswordResetEmail(auth, email);
+        alert("Password reset email sent. Please check your inbox.");
+      } catch (error) {
+        console.error("Password reset error:", error);
+        alert("Failed to send password reset email. Please try again.");
+      }
+    });
+  </script>
+</body>
+</html>

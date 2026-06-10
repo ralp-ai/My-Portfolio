@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Fitness Assistant - Gymgorithm</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary: #00d9ff;
+      --primary-dark: #00aacc;
+      --secondary: #2ed573;
+      --danger: #ff4757;
+      --warning: #ffa502;
+      --dark: #141e30;
+      --darker: #0f172a;
+      --light: #f8fafc;
+      --gray: #94a3b8;
+      --dark-gray: #334155;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: var(--darker);
+      color: var(--light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header Styles */
+    header {
+      padding: 15px 20px;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo i {
+      font-size: 28px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .back-btn {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--light);
+      border: none;
+      padding: 8px 15px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Main Chat Container */
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 20px;
+    }
+
+    /* Chat Header */
+    .chat-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .chat-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .chat-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .chat-subtitle {
+      font-size: 14px;
+      color: var(--gray);
+      margin-top: 3px;
+    }
+
+    /* Chat Messages */
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .message {
+      display: flex;
+      gap: 10px;
+      max-width: 80%;
+    }
+
+    .message-user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .message-bot {
+      align-self: flex-start;
+    }
+
+    .message-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .message-user .message-avatar {
+      background: var(--dark-gray);
+    }
+
+    .message-content {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .message-bubble {
+      padding: 12px 16px;
+      border-radius: 18px;
+      line-height: 1.5;
+    }
+
+    .message-bot .message-bubble {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom-left-radius: 4px;
+    }
+
+    .message-user .message-bubble {
+      background: var(--primary);
+      color: var(--darker);
+      border-bottom-right-radius: 4px;
+    }
+
+    .message-time {
+      font-size: 12px;
+      color: var(--gray);
+      padding: 0 10px;
+    }
+
+    .message-user .message-time {
+      text-align: right;
+    }
+
+    /* Chat Input */
+    .chat-input-container {
+      padding: 15px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .chat-form {
+      display: flex;
+      gap: 10px;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 12px 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: var(--light);
+      font-size: 16px;
+      resize: none;
+      min-height: 50px;
+      max-height: 150px;
+    }
+
+    .chat-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(0, 217, 255, 0.2);
+    }
+
+    .send-btn {
+      width: 50px;
+      height: 50px;
+      background: var(--primary);
+      color: var(--darker);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .send-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .send-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Quick Suggestions */
+    .quick-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .suggestion-btn {
+      background: rgba(0, 217, 255, 0.1);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      border-radius: 20px;
+      padding: 8px 15px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .suggestion-btn:hover {
+      background: rgba(0, 217, 255, 0.2);
+    }
+
+    /* Loading Indicator */
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 10px 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 18px;
+      width: fit-content;
+      margin-bottom: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom-left-radius: 4px;
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--gray);
+      border-radius: 50%;
+      animation: typingAnimation 1.4s infinite ease-in-out;
+    }
+
+    .typing-dot:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typingAnimation {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-5px); }
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      .message {
+        max-width: 90%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .chat-header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .message {
+        max-width: 100%;
+      }
+
+      .chat-form {
+        flex-direction: column;
+      }
+
+      .send-btn {
+        width: 100%;
+        height: 45px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="dashboard.html" class="logo">
+      <i class="fas fa-dumbbell"></i>
+      <span>Gymgorithm</span>
+    </a>
+    <div class="header-actions">
+      <button class="back-btn" onclick="window.location.href='dashboard.html'">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="chat-container">
+    <div class="chat-header">
+      <div class="chat-avatar">
+        <i class="fas fa-robot"></i>
+      </div>
+      <div>
+        <h2 class="chat-title">Gymgorithm AI Assistant</h2>
+        <p class="chat-subtitle">Ask me anything about fitness, nutrition, or your workout plan</p>
+      </div>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+      <!-- Messages will be added here dynamically -->
+    </div>
+
+    <div class="chat-input-container">
+      <div class="quick-suggestions">
+        <button class="suggestion-btn" data-prompt="Suggest a quick workout for today">Quick workout</button>
+        <button class="suggestion-btn" data-prompt="What should I eat after my workout?">Post-workout meal</button>
+        <button class="suggestion-btn" data-prompt="How can I improve my bench press?">Bench press tips</button>
+        <button class="suggestion-btn" data-prompt="Explain my current workout plan">My workout plan</button>
+      </div>
+      <form class="chat-form" id="chatForm">
+        <textarea class="chat-input" id="chatInput" placeholder="Type your message..." required></textarea>
+        <button type="submit" class="send-btn" id="sendBtn">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, db } from './firebase-config.js';
+    import { doc, getDoc, updateDoc, arrayUnion, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    // DOM Elements
+    const chatMessages = document.getElementById('chatMessages');
+    const chatForm = document.getElementById('chatForm');
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const suggestionBtns = document.querySelectorAll('.suggestion-btn');
+
+    // Check if Ollama is running
+    async function checkOllamaConnection() {
+      try {
+        const response = await fetch('http://localhost:11434');
+        return response.ok;
+      } catch {
+        return false;
+      }
+    }
+
+    // Initialize chat when user is authenticated
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const isOllamaRunning = await checkOllamaConnection();
+      if (!isOllamaRunning) {
+        addBotMessage("Warning: Ollama service not detected. Please ensure Ollama is running locally.");
+      }
+
+      await initChat(user);
+    });
+
+    // Initialize chat
+    async function initChat(user) {
+      try {
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (userDoc.exists() && userDoc.data().chatHistory) {
+          userDoc.data().chatHistory.forEach(msg => {
+            addMessage(msg.role, msg.content, msg.timestamp?.toDate());
+          });
+        } else {
+          addBotMessage("Hello! I'm your Gymgorithm AI assistant. How can I help you with your fitness journey today?");
+        }
+      } catch (error) {
+        console.error('Error loading chat history:', error);
+        addBotMessage("Hello! I'm your Gymgorithm AI assistant. How can I help you today?");
+      }
+      scrollToBottom();
+    }
+
+    // Add message to chat
+    function addMessage(role, content, timestamp = new Date()) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message message-${role}`;
+      
+      const avatarDiv = document.createElement('div');
+      avatarDiv.className = 'message-avatar';
+      avatarDiv.innerHTML = role === 'user' ? 
+        `<i class="fas fa-user"></i>` : 
+        `<i class="fas fa-robot"></i>`;
+      
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'message-content';
+      
+      const bubbleDiv = document.createElement('div');
+      bubbleDiv.className = 'message-bubble';
+      bubbleDiv.textContent = content;
+      
+      const timeDiv = document.createElement('div');
+      timeDiv.className = 'message-time';
+      timeDiv.textContent = formatTime(timestamp);
+      
+      contentDiv.appendChild(bubbleDiv);
+      contentDiv.appendChild(timeDiv);
+      
+      messageDiv.appendChild(avatarDiv);
+      messageDiv.appendChild(contentDiv);
+      
+      chatMessages.appendChild(messageDiv);
+      scrollToBottom();
+      
+      return messageDiv;
+    }
+
+
+    async function callOllama(prompt) {
+        try {
+            const response = await fetch('http://localhost:11434/api/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'llama3',
+                    prompt: prompt,
+                    stream: false
+                })
+            });
+            
+            const data = await response.json();
+            return data.response || "Sorry, I didn't understand that.";
+        } catch (error) {
+            console.error('Ollama error:', error);
+            return "Error: Failed to connect to Ollama.";
+        }
+    }
+
+
+    // Add bot message (helper function)
+    function addBotMessage(content, id = null) {
+      return addMessage('bot', content);
+    }
+
+    // Add user message (helper function)
+    function addUserMessage(content) {
+      return addMessage('user', content);
+    }
+
+    // Show typing indicator
+    function showTypingIndicator() {
+      const typingDiv = document.createElement('div');
+      typingDiv.className = 'typing-indicator';
+      typingDiv.id = 'typingIndicator';
+      typingDiv.innerHTML = `
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <span>AI is typing...</span>
+      `;
+      chatMessages.appendChild(typingDiv);
+      scrollToBottom();
+    }
+
+    // Hide typing indicator
+    function hideTypingIndicator() {
+      const typingIndicator = document.getElementById('typingIndicator');
+      if (typingIndicator) {
+        typingIndicator.remove();
+      }
+    }
+
+    // Format time
+    function formatTime(date) {
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // Scroll to bottom of chat
+    function scrollToBottom() {
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Update bot message during streaming
+    function updateBotMessage(id, newContent) {
+      const messageDiv = document.getElementById(id);
+      if (messageDiv) {
+        const bubble = messageDiv.querySelector('.message-bubble');
+        if (bubble) {
+          bubble.textContent = newContent;
+          scrollToBottom();
+        }
+      }
+    }
+
+    // Generate AI response using Ollama
+    async function generateAIResponse(message, userData) {
+      try {
+        // Add user context
+        const context = `You are Gymgorithm AI, a professional fitness assistant.
+        User profile:
+        Goal: ${userData?.preferences?.goal || 'general fitness'}
+        Experience: ${userData?.preferences?.experienceLevel || 'not specified'}
+        Workout Plan: ${userData?.currentWorkoutPlan?.name || 'none'}
+        
+        Provide concise, science-backed advice on workouts, nutrition, and fitness.
+        Format responses clearly with bullet points or numbered lists when appropriate.`;
+
+        const response = await fetch('http://localhost:11434/api/generate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'llama3',
+            prompt: `${context}\n\nUser: ${message}`,
+            stream: true,
+            options: {
+              temperature: 0.7,
+              max_tokens: 1000
+            }
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Ollama API error: ${response.status}`);
+        }
+
+        // Create temporary message for streaming
+        const tempMessageId = 'temp-' + Date.now();
+        addBotMessage('', tempMessageId);
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let aiMessage = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value);
+          const lines = chunk.split('\n');
+
+          for (const line of lines) {
+            if (line.trim()) {
+              try {
+                const parsed = JSON.parse(line);
+                aiMessage += parsed.response;
+                updateBotMessage(tempMessageId, aiMessage);
+              } catch (e) {
+                console.error('Error parsing stream chunk:', e);
+              }
+            }
+          }
+        }
+
+        return aiMessage;
+      } catch (error) {
+        console.error('Error calling Ollama:', error);
+        return "I'm having trouble connecting to the AI service. Please try again later.";
+      }
+    }
+
+    // Handle form submission
+    chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const userInput = chatInput.value.trim();
+        if (!userInput) return;
+        
+        // Show user message
+        addUserMessage(userInput);
+        chatInput.value = '';
+        showTypingIndicator();
+
+        // Call Ollama
+        const botResponse = await callOllama(userInput);
+        hideTypingIndicator();
+        addBotMessage(botResponse);
+
+        // Save to Firestore
+        const user = auth.currentUser;
+        if (user) {
+            const userRef = doc(db, 'users', user.uid);
+            await updateDoc(userRef, {
+                chatHistory: arrayUnion({
+                    role: 'user',
+                    content: userInput,
+                    timestamp: serverTimestamp()
+                }, {
+                    role: 'bot',
+                    content: botResponse,
+                    timestamp: serverTimestamp()
+                })
+            });
+        }
+    });
+
+
+    // Quick suggestion buttons
+    suggestionBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            chatInput.value = btn.dataset.prompt;
+            chatForm.dispatchEvent(new Event('submit'));
+        });
+    });
+
+    // Initialize chat when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialization handled by onAuthStateChanged
+    });
+  </script>
+</body>
+</html>

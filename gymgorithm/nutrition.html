@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nutrition Guide - Gymgorithm</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #141e30, #243b55);
+      color: white;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .back-button {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+      transition: color 0.2s ease;
+    }
+    
+    .back-button i {
+      margin-right: 8px;
+    }
+    
+    .back-button:hover {
+      color: #cccccc;
+      text-decoration: underline;
+    }
+    
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #00d9ff;
+    }
+    
+    .nutrition-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 25px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .nutrition-card h2 {
+      color: #00d9ff;
+      margin-bottom: 15px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 8px;
+    }
+    
+    .macros {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .macro-item {
+      background: rgba(0, 217, 255, 0.1);
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .macro-value {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #00d9ff;
+    }
+    
+    .macro-label {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+    
+    .meal-plan {
+      margin-top: 20px;
+    }
+    
+    .meal {
+      background: rgba(0,0,0,0.2);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    
+    .meal h3 {
+      color: #00d9ff;
+      margin-bottom: 10px;
+    }
+    
+    .food-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .food-item:last-child {
+      border-bottom: none;
+    }
+    
+    .food-name {
+      font-weight: 500;
+    }
+    
+    .food-calories {
+      color: #00d9ff;
+    }
+    
+    .tips-section {
+      margin-top: 30px;
+    }
+    
+    .tip {
+      background: rgba(255,255,255,0.05);
+      padding: 15px;
+      border-left: 3px solid #00d9ff;
+      margin-bottom: 10px;
+      border-radius: 0 5px 5px 0;
+    }
+    
+    @media (max-width: 600px) {
+      .macros {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .food-item {
+        flex-direction: column;
+      }
+      
+      .food-calories {
+        margin-top: 3px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="dashboard.html" class="back-button"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+    <h1>Your Nutrition Guide</h1>
+    
+    <div class="nutrition-card">
+      <h2>Daily Macronutrients</h2>
+      <div class="macros" id="macrosContainer">
+        <!-- Filled by JavaScript -->
+      </div>
+      
+      <div class="meal-plan">
+        <h3>Sample Meal Plan</h3>
+        
+        <div class="meal">
+          <h3>Breakfast</h3>
+          <div class="food-item">
+            <span class="food-name">Oatmeal with berries and nuts</span>
+            <span class="food-calories">~350 kcal</span>
+          </div>
+          <div class="food-item">
+            <span class="food-name">Greek yogurt</span>
+            <span class="food-calories">~150 kcal</span>
+          </div>
+        </div>
+        
+        <div class="meal">
+          <h3>Lunch</h3>
+          <div class="food-item">
+            <span class="food-name">Grilled chicken with quinoa</span>
+            <span class="food-calories">~450 kcal</span>
+          </div>
+          <div class="food-item">
+            <span class="food-name">Mixed vegetables</span>
+            <span class="food-calories">~100 kcal</span>
+          </div>
+        </div>
+        
+        <div class="meal">
+          <h3>Dinner</h3>
+          <div class="food-item">
+            <span class="food-name">Salmon with sweet potato</span>
+            <span class="food-calories">~500 kcal</span>
+          </div>
+          <div class="food-item">
+            <span class="food-name">Steamed broccoli</span>
+            <span class="food-calories">~80 kcal</span>
+          </div>
+        </div>
+        
+        <div class="meal">
+          <h3>Snacks</h3>
+          <div class="food-item">
+            <span class="food-name">Protein shake</span>
+            <span class="food-calories">~200 kcal</span>
+          </div>
+          <div class="food-item">
+            <span class="food-name">Handful of almonds</span>
+            <span class="food-calories">~160 kcal</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tips-section">
+      <h2>Nutrition Tips</h2>
+      
+      <div class="tip">
+        <strong>Stay Hydrated:</strong> Drink at least 2-3 liters of water daily, more if you're active.
+      </div>
+      
+      <div class="tip">
+        <strong>Protein Timing:</strong> Distribute protein intake evenly throughout the day for optimal muscle synthesis.
+      </div>
+      
+      <div class="tip">
+        <strong>Whole Foods:</strong> Focus on minimally processed foods for better nutrient absorption.
+      </div>
+      
+      <div class="tip">
+        <strong>Meal Prep:</strong> Prepare meals in advance to stay consistent with your nutrition goals.
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, db } from './firebase-config.js';
+    import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            
+            // Display nutrition data if available
+            if (userData.nutritionPlan) {
+              const macrosContainer = document.getElementById('macrosContainer');
+              macrosContainer.innerHTML = `
+                <div class="macro-item">
+                  <div class="macro-value">${userData.nutritionPlan.calories}</div>
+                  <div class="macro-label">Calories</div>
+                </div>
+                <div class="macro-item">
+                  <div class="macro-value">${userData.nutritionPlan.protein}g</div>
+                  <div class="macro-label">Protein</div>
+                </div>
+                <div class="macro-item">
+                  <div class="macro-value">${userData.nutritionPlan.carbs}g</div>
+                  <div class="macro-label">Carbs</div>
+                </div>
+                <div class="macro-item">
+                  <div class="macro-value">${userData.nutritionPlan.fats}g</div>
+                  <div class="macro-label">Fats</div>
+                </div>
+              `;
+            }
+          }
+        } catch (error) {
+          console.error("Error loading nutrition data:", error);
+        }
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+  </script>
+</body>
+</html>

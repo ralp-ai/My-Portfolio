@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Your Profile - Gymgorithm</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #141e30, #243b55);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .profile-container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      border-radius: 15px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #00d9ff;
+    }
+    
+    .progress-steps {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      position: relative;
+    }
+    
+    .progress-steps::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: rgba(255,255,255,0.2);
+      z-index: 1;
+    }
+    
+    .step {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      position: relative;
+      z-index: 2;
+      transition: all 0.3s;
+    }
+    
+    .step.active {
+      background: #00d9ff;
+      transform: scale(1.1);
+    }
+    
+    .step.completed {
+      background: #2ed573;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 12px 15px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: #00d9ff;
+      box-shadow: 0 0 0 2px rgba(0, 217, 255, 0.2);
+    }
+    
+    .error-message {
+      color: #ff6b6b;
+      margin-top: 5px;
+      font-size: 14px;
+      display: none;
+    }
+    
+    .error-border {
+      border-color: #ff6b6b !important;
+    }
+    
+    .btn-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+    
+    .btn {
+      padding: 12px 25px;
+      background: #00d9ff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .btn:hover {
+      background: #00aacc;
+      transform: translateY(-2px);
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #00d9ff;
+    }
+    
+    .btn-outline:hover {
+      background: rgba(0, 217, 255, 0.1);
+    }
+    
+    .form-step {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    .form-step.active {
+      display: block;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      margin-left: 10px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 480px) {
+      .profile-container {
+        padding: 25px 20px;
+      }
+      
+      .btn {
+        padding: 10px 20px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <div class="progress-steps">
+      <div class="step active" id="step1">1</div>
+      <div class="step" id="step2">2</div>
+      <div class="step" id="step3">3</div>
+    </div>
+    
+    <h2>Complete Your Profile</h2>
+    
+    <form id="profileForm">
+      <!-- Step 1: Basic Info -->
+      <div class="form-step active" id="step-1">
+        <div class="form-group">
+          <label for="fullName">Full Name</label>
+          <input type="text" id="fullName" placeholder="Enter your full name" required>
+          <div class="error-message" id="fullNameError">Please enter your full name</div>
+        </div>
+        
+        <div class="form-group">
+          <label for="age">Age</label>
+          <input type="number" id="age" placeholder="Enter your age" min="13" max="120" required>
+          <div class="error-message" id="ageError">Please enter a valid age (13-120)</div>
+        </div>
+        
+        <div class="form-group">
+          <label for="gender">Gender</label>
+          <select id="gender" required>
+            <option value="" disabled selected>Select your gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+            <option value="prefer-not-to-say">Prefer not to say</option>
+          </select>
+          <div class="error-message" id="genderError">Please select your gender</div>
+        </div>
+        
+        <div class="btn-container">
+          <button type="button" class="btn btn-outline" id="prevBtn" style="display: none;">Back</button>
+          <button type="button" class="btn" id="nextBtn">Next</button>
+        </div>
+      </div>
+      
+      <!-- Step 2: Physical Stats -->
+      <div class="form-step" id="step-2">
+        <div class="form-group">
+          <label for="weight">Weight (kg)</label>
+          <input type="number" id="weight" placeholder="Enter your weight" min="30" max="300" step="0.1" required>
+          <div class="error-message" id="weightError">Please enter a valid weight (30-300kg)</div>
+        </div>
+        
+        <div class="form-group">
+          <label for="height">Height (cm)</label>
+          <input type="number" id="height" placeholder="Enter your height" min="120" max="250" required>
+          <div class="error-message" id="heightError">Please enter a valid height (120-250cm)</div>
+        </div>
+        
+        <div class="form-group">
+          <label for="activityLevel">Activity Level</label>
+          <select id="activityLevel" required>
+            <option value="" disabled selected>Select your activity level</option>
+            <option value="sedentary">Sedentary (little or no exercise)</option>
+            <option value="lightly-active">Lightly active (light exercise 1-3 days/week)</option>
+            <option value="moderately-active">Moderately active (moderate exercise 3-5 days/week)</option>
+            <option value="very-active">Very active (hard exercise 6-7 days/week)</option>
+            <option value="extra-active">Extra active (very hard exercise & physical job)</option>
+          </select>
+          <div class="error-message" id="activityLevelError">Please select your activity level</div>
+        </div>
+        
+        <div class="btn-container">
+          <button type="button" class="btn btn-outline" id="prevBtn2">Back</button>
+          <button type="button" class="btn" id="nextBtn2">Next</button>
+        </div>
+      </div>
+      
+      <!-- Step 3: Goals -->
+      <div class="form-step" id="step-3">
+        <div class="form-group">
+          <label for="fitnessGoals">Primary Fitness Goal</label>
+          <select id="fitnessGoals" required>
+            <option value="" disabled selected>Select your goal</option>
+            <option value="weight-loss">Weight Loss</option>
+            <option value="muscle-gain">Muscle Gain</option>
+            <option value="strength-training">Strength Training</option>
+            <option value="general-fitness">General Fitness</option>
+            <option value="endurance">Endurance</option>
+          </select>
+          <div class="error-message" id="fitnessGoalsError">Please select your fitness goal</div>
+        </div>
+        
+        <div class="form-group">
+          <label for="experienceLevel">Experience Level</label>
+          <select id="experienceLevel" required>
+            <option value="" disabled selected>Select your experience level</option>
+            <option value="beginner">Beginner (0-6 months)</option>
+            <option value="intermediate">Intermediate (6 months - 2 years)</option>
+            <option value="advanced">Advanced (2+ years)</option>
+          </select>
+          <div class="error-message" id="experienceLevelError">Please select your experience level</div>
+        </div>
+        
+        <div class="form-group">
+          <label for="workoutDays">Preferred Workout Days</label>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px;">
+            <label style="display: flex; align-items: center; gap: 5px;">
+              <input type="checkbox" name="workoutDays" value="monday"> Mon
+            </label>
+            <label style="display: flex; align-items: center; gap: 5px;">
+              <input type="checkbox" name="workoutDays" value="tuesday"> Tue
+            </label>
+            <label style="display: flex; align-items: center; gap: 5px;">
+              <input type="checkbox" name="workoutDays" value="wednesday"> Wed
+            </label>
+            <label style="display: flex; align-items: center; gap: 5px;">
+              <input type="checkbox" name="workoutDays" value="thursday"> Thu
+            </label>
+            <label style="display: flex; align-items: center; gap: 5px;">
+              <input type="checkbox" name="workoutDays" value="friday"> Fri
+            </label>
+            <label style="display: flex; align-items: center; gap: 5px;">
+              <input type="checkbox" name="workoutDays" value="saturday"> Sat
+            </label>
+            <label style="display: flex; align-items: center; gap: 5px;">
+              <input type="checkbox" name="workoutDays" value="sunday"> Sun
+            </label>
+          </div>
+          <div class="error-message" id="daysError">Please select at least one workout day</div>
+        </div>
+        
+        <div class="btn-container">
+          <button type="button" class="btn btn-outline" id="prevBtn3">Back</button>
+          <button type="submit" class="btn" id="submitBtn">
+            <span id="buttonText">Complete Profile</span>
+            <div id="spinner" class="spinner"></div>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script type="module">
+    import { auth, db } from './firebase-config.js';
+    import { doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+
+    let currentUser = null;
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        currentUser = user;
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+
+    const formSteps = document.querySelectorAll('.form-step');
+    const steps = document.querySelectorAll('.step');
+    const nextBtn = document.getElementById('nextBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const buttonText = document.getElementById('buttonText');
+    const spinner = document.getElementById('spinner');
+
+    let currentStep = 0;
+    updateFormSteps();
+
+    // Event listeners for navigation
+    nextBtn.addEventListener('click', () => {
+      if (validateStep(currentStep)) {
+        currentStep++;
+        updateFormSteps();
+      }
+    });
+
+    document.getElementById('nextBtn2').addEventListener('click', () => {
+      if (validateStep(currentStep)) {
+        currentStep++;
+        updateFormSteps();
+      }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      currentStep--;
+      updateFormSteps();
+    });
+
+    document.getElementById('prevBtn2').addEventListener('click', () => {
+      currentStep--;
+      updateFormSteps();
+    });
+
+    document.getElementById('prevBtn3').addEventListener('click', () => {
+      currentStep--;
+      updateFormSteps();
+    });
+
+    function updateFormSteps() {
+      formSteps.forEach((step, index) => {
+        step.classList.toggle('active', index === currentStep);
+      });
+
+      steps.forEach((step, index) => {
+        step.classList.toggle('active', index === currentStep);
+        step.classList.toggle('completed', index < currentStep);
+      });
+
+      // Update button visibility
+      document.getElementById('prevBtn').style.display = currentStep > 0 ? 'inline-block' : 'none';
+      document.getElementById('nextBtn').style.display = currentStep === 0 ? 'inline-block' : 'none';
+      document.getElementById('prevBtn2').style.display = currentStep === 1 ? 'inline-block' : 'none';
+      document.getElementById('nextBtn2').style.display = currentStep === 1 ? 'inline-block' : 'none';
+      document.getElementById('prevBtn3').style.display = currentStep === 2 ? 'inline-block' : 'none';
+      document.getElementById('submitBtn').style.display = currentStep === 2 ? 'inline-block' : 'none';
+    }
+
+    function validateStep(stepIndex) {
+      let isValid = true;
+
+      // Clear previous errors
+      const errorMessages = formSteps[stepIndex].querySelectorAll('.error-message');
+      errorMessages.forEach(el => el.style.display = 'none');
+
+      // Clear error borders
+      const inputs = formSteps[stepIndex].querySelectorAll('input, select');
+      inputs.forEach(input => input.classList.remove('error-border'));
+
+      // Step 1: Personal Info
+      if (stepIndex === 0) {
+        const fullName = document.getElementById('fullName');
+        const age = document.getElementById('age');
+        const gender = document.getElementById('gender');
+
+        if (fullName.value.trim() === '') {
+          showError(fullName, 'fullNameError');
+          isValid = false;
+        }
+        if (age.value.trim() === '' || isNaN(age.value) || age.value < 13 || age.value > 120) {
+          showError(age, 'ageError');
+          isValid = false;
+        }
+        if (gender.value === '') {
+          showError(gender, 'genderError');
+          isValid = false;
+        }
+      }
+
+      // Step 2: Physical Info
+      if (stepIndex === 1) {
+        const weight = document.getElementById('weight');
+        const height = document.getElementById('height');
+        const activityLevel = document.getElementById('activityLevel');
+
+        if (weight.value.trim() === '' || isNaN(weight.value) || weight.value < 30 || weight.value > 300) {
+          showError(weight, 'weightError');
+          isValid = false;
+        }
+        if (height.value.trim() === '' || isNaN(height.value) || height.value < 120 || height.value > 250) {
+          showError(height, 'heightError');
+          isValid = false;
+        }
+        if (activityLevel.value === '') {
+          showError(activityLevel, 'activityLevelError');
+          isValid = false;
+        }
+      }
+
+      // Step 3: Fitness Goals
+      if (stepIndex === 2) {
+        const fitnessGoals = document.getElementById('fitnessGoals');
+        const experienceLevel = document.getElementById('experienceLevel');
+        const workoutDays = document.querySelectorAll('input[name="workoutDays"]:checked');
+
+        if (fitnessGoals.value === '') {
+          showError(fitnessGoals, 'fitnessGoalsError');
+          isValid = false;
+        }
+        if (experienceLevel.value === '') {
+          showError(experienceLevel, 'experienceLevelError');
+          isValid = false;
+        }
+        if (workoutDays.length === 0) {
+          const daysError = document.getElementById('daysError');
+          daysError.style.display = 'block';
+          isValid = false;
+        }
+      }
+
+      return isValid;
+    }
+
+    function showError(input, errorId) {
+      const errorEl = document.getElementById(errorId);
+      errorEl.style.display = 'block';
+      input.classList.add('error-border');
+    }
+
+    function generateWorkoutPlan(userData) {
+      const { preferences, profile } = userData;
+      const workoutDays = preferences.workoutDays;
+      const experienceLevel = preferences.level;
+      const fitnessGoal = preferences.goal;
+      
+      const exerciseLibrary = {
+        beginner: {
+          'weight-loss': ['Bodyweight Squats', 'Push-ups (knees if needed)', 'Walking Lunges', 'Plank'],
+          'muscle-gain': ['Bodyweight Squats', 'Push-ups', 'Inverted Rows', 'Glute Bridges'],
+          'strength-training': ['Bodyweight Squats', 'Push-ups', 'Plank', 'Step-ups'],
+          'general-fitness': ['Bodyweight Squats', 'Push-ups', 'Walking Lunges', 'Superman'],
+          'endurance': ['Bodyweight Squats', 'Push-ups', 'Jumping Jacks', 'Mountain Climbers']
+        },
+        intermediate: {
+          'weight-loss': ['Jump Squats', 'Push-ups', 'Burpees', 'Plank to Push-up'],
+          'muscle-gain': ['Goblet Squats', 'Dumbbell Bench Press', 'Bent-over Rows', 'Romanian Deadlifts'],
+          'strength-training': ['Barbell Squats', 'Bench Press', 'Deadlifts', 'Overhead Press'],
+          'general-fitness': ['Squats', 'Push-ups', 'Pull-ups', 'Plank Variations'],
+          'endurance': ['Circuit Training', 'HIIT Exercises', 'Box Jumps', 'Battle Ropes']
+        },
+        advanced: {
+          'weight-loss': ['Plyometric Exercises', 'Complex Movements', 'HIIT Circuits', 'Sprint Intervals'],
+          'muscle-gain': ['Heavy Compound Lifts', 'Isolation Exercises', 'Drop Sets', 'Supersets'],
+          'strength-training': ['Powerlifting Movements', 'Progressive Overload', 'Accessory Work', 'Periodization'],
+          'general-fitness': ['Cross-training', 'Functional Movements', 'Core Stability', 'Mobility Work'],
+          'endurance': ['Long Duration Circuits', 'Sport-specific Training', 'Interval Sprints', 'Endurance Challenges']
+        }
+      };
+
+      let workoutSplit = [];
+      if (workoutDays.length <= 2) {
+        workoutDays.forEach(day => {
+          workoutSplit.push({
+            day,
+            type: 'Full Body',
+            exercises: exerciseLibrary[experienceLevel][fitnessGoal]
+          });
+        });
+      } else if (workoutDays.length <= 4) {
+        workoutDays.forEach((day, index) => {
+          const isUpper = index % 2 === 0;
+          workoutSplit.push({
+            day,
+            type: isUpper ? 'Upper Body' : 'Lower Body',
+            exercises: isUpper 
+              ? exerciseLibrary[experienceLevel][fitnessGoal].filter(ex => 
+                  ex.includes('Push') || ex.includes('Press') || ex.includes('Rows') || ex.includes('Pull'))
+              : exerciseLibrary[experienceLevel][fitnessGoal].filter(ex => 
+                  ex.includes('Squat') || ex.includes('Lunge') || ex.includes('Deadlift') || ex.includes('Bridge'))
+          });
+        });
+      } else {
+        workoutDays.forEach((day, index) => {
+          const splitType = ['Push', 'Pull', 'Legs', 'Core/Cardio'][index % 4];
+          workoutSplit.push({
+            day,
+            type: splitType,
+            exercises: exerciseLibrary[experienceLevel][fitnessGoal].filter(ex => {
+              if (splitType === 'Push') return ex.includes('Push') || ex.includes('Press');
+              if (splitType === 'Pull') return ex.includes('Pull') || ex.includes('Row');
+              if (splitType === 'Legs') return ex.includes('Squat') || ex.includes('Lunge') || ex.includes('Deadlift');
+              return ex.includes('Plank') || ex.includes('Core') || ex.includes('Cardio');
+            })
+          });
+        });
+      }
+
+      const durationMap = {
+        beginner: '30-45 minutes',
+        intermediate: '45-60 minutes',
+        advanced: '60-90 minutes'
+      };
+
+      workoutSplit.forEach(workout => {
+        workout.duration = durationMap[experienceLevel];
+        workout.restBetweenSets = experienceLevel === 'beginner' ? '60-90 sec' : 
+                                 experienceLevel === 'intermediate' ? '45-60 sec' : '30-45 sec';
+      });
+
+      return workoutSplit;
+    }
+
+    function calculateNutrition(profile) {
+      let bmr;
+      if (profile.gender === 'male') {
+        bmr = 10 * profile.weight + 6.25 * profile.height - 5 * profile.age + 5;
+      } else {
+        bmr = 10 * profile.weight + 6.25 * profile.height - 5 * profile.age - 161;
+      }
+
+      const activityMultipliers = {
+        'sedentary': 1.2,
+        'lightly-active': 1.375,
+        'moderately-active': 1.55,
+        'very-active': 1.725,
+        'extra-active': 1.9
+      };
+      
+      const tdee = bmr * activityMultipliers[profile.activityLevel];
+
+      let calorieRecommendation;
+      let proteinRecommendation;
+      
+      switch(profile.preferences.goal) {
+        case 'weight-loss':
+          calorieRecommendation = tdee * 0.85;
+          proteinRecommendation = 2.2 * profile.weight;
+          break;
+        case 'muscle-gain':
+          calorieRecommendation = tdee * 1.1;
+          proteinRecommendation = 2.0 * profile.weight;
+          break;
+        case 'strength-training':
+          calorieRecommendation = tdee;
+          proteinRecommendation = 1.8 * profile.weight;
+          break;
+        default:
+          calorieRecommendation = tdee;
+          proteinRecommendation = 1.6 * profile.weight;
+      }
+
+      return {
+        calories: Math.round(calorieRecommendation),
+        protein: Math.round(proteinRecommendation),
+        carbs: Math.round((calorieRecommendation * 0.45) / 4),
+        fats: Math.round((calorieRecommendation * 0.3) / 9)
+      };
+    }
+
+    document.getElementById('profileForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if (!validateStep(currentStep)) return;
+
+      buttonText.style.display = 'none';
+      spinner.style.display = 'inline-block';
+
+      const data = {
+        name: document.getElementById('fullName').value.trim(),
+        profile: {
+          age: parseInt(document.getElementById('age').value),
+          gender: document.getElementById('gender').value,
+          weight: parseFloat(document.getElementById('weight').value),
+          height: parseFloat(document.getElementById('height').value),
+          activityLevel: document.getElementById('activityLevel').value,
+          lastUpdated: new Date()
+        },
+        preferences: {
+          goal: document.getElementById('fitnessGoals').value,
+          level: document.getElementById('experienceLevel').value,
+          workoutDays: Array.from(document.querySelectorAll('input[name="workoutDays"]:checked')).map(el => el.value)
+        },
+        profileCompleted: true
+      };
+
+      try {
+        // Generate workout plan
+        const workoutPlan = generateWorkoutPlan(data);
+        
+        // Calculate nutrition
+        const nutritionPlan = calculateNutrition({
+          ...data.profile,
+          preferences: data.preferences
+        });
+
+        // Save all data to Firebase
+        await setDoc(doc(db, 'users', currentUser.uid), {
+          ...data,
+          workoutPlan,
+          nutritionPlan,
+          lastWorkoutGenerated: new Date()
+        }, { merge: true });
+
+        alert("Profile completed successfully! Your personalized workout plan has been created.");
+        window.location.href = "login.html";
+      } catch (error) {
+        alert("Error saving profile: " + error.message);
+      } finally {
+        buttonText.style.display = 'inline-block';
+        spinner.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

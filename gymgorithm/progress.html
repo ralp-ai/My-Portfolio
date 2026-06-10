@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progress Tracking - Gymgorithm</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.css">
+  <style>
+    /* Reuse the same root variables and base styles from dashboard */
+    :root {
+      --primary: #00d9ff;
+      --primary-dark: #00aacc;
+      --secondary: #2ed573;
+      --danger: #ff4757;
+      --warning: #ffa502;
+      --dark: #141e30;
+      --darker: #0f172a;
+      --light: #f8fafc;
+      --gray: #94a3b8;
+      --dark-gray: #334155;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: var(--darker);
+      color: var(--light);
+      min-height: 100vh;
+    }
+
+    /* Header Styles */
+    header {
+      padding: 15px 20px;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo i {
+      font-size: 28px;
+    }
+
+    /* Main Content */
+    .progress-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .period-selector {
+      display: flex;
+      gap: 10px;
+    }
+
+    .period-btn {
+      background: none;
+      border: 1px solid var(--dark-gray);
+      color: var(--light);
+      padding: 8px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .period-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: var(--darker);
+    }
+
+    /* Charts Section */
+    .charts-section {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .chart-container {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .chart-title {
+      font-size: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chart-title i {
+      color: var(--primary);
+    }
+
+    .chart-wrapper {
+      height: 300px;
+      position: relative;
+    }
+
+    /* Progress Metrics */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .metric-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .metric-title {
+      font-size: 16px;
+      margin-bottom: 10px;
+      color: var(--gray);
+    }
+
+    .metric-value {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .metric-change {
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .metric-change.positive {
+      color: var(--secondary);
+    }
+
+    .metric-change.negative {
+      color: var(--danger);
+    }
+
+    /* Workout History */
+    .history-section {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .history-title {
+      font-size: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .history-title i {
+      color: var(--primary);
+    }
+
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .history-table th {
+      text-align: left;
+      padding: 12px 15px;
+      background: rgba(255, 255, 255, 0.1);
+      font-weight: 600;
+    }
+
+    .history-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .history-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .history-table tr:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .workout-type {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .workout-type i {
+      color: var(--primary);
+    }
+
+    .view-btn {
+      background: rgba(0, 217, 255, 0.1);
+      color: var(--primary);
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .view-btn:hover {
+      background: rgba(0, 217, 255, 0.2);
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+
+      .period-selector {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 10px;
+      }
+
+      .history-table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="dashboard.html" class="logo">
+      <i class="fas fa-dumbbell"></i>
+      <span>Gymgorithm</span>
+    </a>
+    <div>
+      <a href="dashboard.html" class="btn secondary-btn">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back to Dashboard</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="progress-container">
+    <div class="page-header">
+      <h1 class="page-title">Progress Tracking</h1>
+      <div class="period-selector">
+        <button class="period-btn active">Week</button>
+        <button class="period-btn">Month</button>
+        <button class="period-btn">3 Months</button>
+        <button class="period-btn">Year</button>
+        <button class="period-btn">All Time</button>
+      </div>
+    </div>
+
+    <div class="metrics-grid" id="metricsGrid">
+      <!-- Metrics will be populated by JavaScript -->
+    </div>
+
+    <div class="charts-section">
+      <div class="chart-container">
+        <div class="chart-header">
+          <h2 class="chart-title">
+            <i class="fas fa-weight"></i>
+            <span>Weight Progress</span>
+          </h2>
+          <div>
+            <button class="btn secondary-btn btn-sm">
+              <i class="fas fa-plus"></i>
+              <span>Add Measurement</span>
+            </button>
+          </div>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="weightChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-header">
+          <h2 class="chart-title">
+            <i class="fas fa-chart-line"></i>
+            <span>Workout Consistency</span>
+          </h2>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="consistencyChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-header">
+          <h2 class="chart-title">
+            <i class="fas fa-fire"></i>
+            <span>Calories Burned</span>
+          </h2>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="caloriesChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="history-section">
+      <div class="history-header">
+        <h2 class="history-title">
+          <i class="fas fa-history"></i>
+          <span>Workout History</span>
+        </h2>
+        <div>
+          <button class="btn secondary-btn btn-sm">
+            <i class="fas fa-filter"></i>
+            <span>Filter</span>
+          </button>
+        </div>
+      </div>
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Workout</th>
+            <th>Duration</th>
+            <th>Exercises</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="workoutHistory">
+          <!-- Workout history will be populated by JavaScript -->
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+  <script type="module">
+    import { auth, db } from './firebase-config.js';
+    import { doc, getDoc, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    // DOM Elements
+    const metricsGrid = document.getElementById('metricsGrid');
+    const workoutHistory = document.getElementById('workoutHistory');
+    const periodButtons = document.querySelectorAll('.period-btn');
+
+
+    // Charts
+    let weightChart, consistencyChart, caloriesChart;
+
+    // Initialize progress page
+    async function initProgressPage() {
+      conAuthStateChanged(auth, async (user) => {
+        if (user) {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    updateMetrics(userData);
+                    await loadWorkoutHistory(user.uid);
+                    initCharts(userData.progressData);
+                }
+            } catch (error) {
+                console.error('Error loading progress data:', error);
+            }
+        } else {
+            window.location.href = 'login.html';
+        }
+    });
+
+      try {
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          updateMetrics(userData);
+          
+          // Load workout history
+          await loadWorkoutHistory(user.uid);
+          
+          // Initialize charts
+          initCharts(userData.progressData);
+        }
+      } catch (error) {
+        console.error('Error loading progress data:', error);
+      }
+    }
+
+    // Update progress metrics
+    function updateMetrics(userData) {
+      metricsGrid.innerHTML = `
+        <div class="metric-card">
+          <div class="metric-title">Current Weight</div>
+          <div class="metric-value">${userData.currentWeight || '--'} kg</div>
+          <div class="metric-change ${userData.weightChange >= 0 ? 'positive' : 'negative'}">
+            <i class="fas fa-${userData.weightChange >= 0 ? 'arrow-up' : 'arrow-down'}"></i>
+            ${Math.abs(userData.weightChange || 0)} kg
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">Body Fat %</div>
+          <div class="metric-value">${userData.bodyFat || '--'}%</div>
+          <div class="metric-change ${userData.bodyFatChange >= 0 ? 'positive' : 'negative'}">
+            <i class="fas fa-${userData.bodyFatChange >= 0 ? 'arrow-up' : 'arrow-down'}"></i>
+            ${Math.abs(userData.bodyFatChange || 0)}%
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">Muscle Mass</div>
+          <div class="metric-value">${userData.muscleMass || '--'}%</div>
+          <div class="metric-change ${userData.muscleChange >= 0 ? 'positive' : 'negative'}">
+            <i class="fas fa-${userData.muscleChange >= 0 ? 'arrow-up' : 'arrow-down'}"></i>
+            ${Math.abs(userData.muscleChange || 0)}%
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">Workouts This Week</div>
+          <div class="metric-value">${userData.workoutsThisWeek || 0}</div>
+          <div class="metric-change ${userData.workoutsChange >= 0 ? 'positive' : 'negative'}">
+            <i class="fas fa-${userData.workoutsChange >= 0 ? 'arrow-up' : 'arrow-down'}"></i>
+            ${Math.abs(userData.workoutsChange || 0)}
+          </div>
+        </div>
+      `;
+    }
+
+    // Initialize charts
+    function initCharts(progressData = {}) {
+      const weightCtx = document.getElementById('weightChart').getContext('2d');
+      const consistencyCtx = document.getElementById('consistencyChart').getContext('2d');
+      const caloriesCtx = document.getElementById('caloriesChart').getContext('2d');
+
+      // Default data if no progress data available
+      const defaultWeightData = {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+          label: 'Weight (kg)',
+          data: [75, 74, 73, 72, 71, 70],
+          borderColor: '#00d9ff',
+          backgroundColor: 'rgba(0, 217, 255, 0.1)',
+          tension: 0.4,
+          fill: true
+        }]
+      };
+
+      const defaultConsistencyData = {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [{
+          label: 'Workouts Completed',
+          data: [1, 1, 1, 0, 1, 0, 0],
+          backgroundColor: 'rgba(46, 213, 115, 0.5)',
+          borderColor: '#2ed573',
+          borderWidth: 1
+        }]
+      };
+
+      const defaultCaloriesData = {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [{
+          label: 'Calories Burned',
+          data: [300, 350, 400, 0, 320, 0, 0],
+          backgroundColor: 'rgba(255, 107, 107, 0.5)',
+          borderColor: '#ff6b6b',
+          borderWidth: 1
+        }]
+      };
+
+      // Weight chart
+      weightChart = new Chart(weightCtx, {
+        type: 'line',
+        data: progressData.weight || defaultWeightData,
+        options: getChartOptions('Weight Progress (kg)')
+      });
+
+      // Consistency chart
+      consistencyChart = new Chart(consistencyCtx, {
+        type: 'bar',
+        data: progressData.consistency || defaultConsistencyData,
+        options: getChartOptions('Workouts Completed')
+      });
+
+      // Calories chart
+      caloriesChart = new Chart(caloriesCtx, {
+        type: 'bar',
+        data: progressData.calories || defaultCaloriesData,
+        options: getChartOptions('Calories Burned')
+      });
+    }
+
+    // Common chart options
+    function getChartOptions(title) {
+      return {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              color: '#f8fafc'
+            }
+          },
+          title: {
+            display: true,
+            text: title,
+            color: '#f8fafc'
+          }
+        },
+        scales: {
+          x: {
+            grid: {
+              color: 'rgba(255, 255, 255, 0.1)'
+            },
+            ticks: {
+              color: '#f8fafc'
+            }
+          },
+          y: {
+            grid: {
+              color: 'rgba(255, 255, 255, 0.1)'
+            },
+            ticks: {
+              color: '#f8fafc'
+            }
+          }
+        }
+      };
+    }
+
+    // Load workout history
+    async function loadWorkoutHistory(userId) {
+      try {
+        const historyRef = collection(db, 'users', userId, 'workoutHistory');
+        const q = query(historyRef, orderBy('date', 'desc'), limit(10));
+        const querySnapshot = await getDocs(q);
+        
+        workoutHistory.innerHTML = '';
+        
+        querySnapshot.forEach(doc => {
+          const workout = doc.data();
+          const date = workout.date.toDate();
+          const duration = formatDuration(workout.duration);
+          
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${date.toLocaleDateString()}</td>
+            <td>
+              <div class="workout-type">
+                <i class="fas fa-dumbbell"></i>
+                <span>${workout.workoutType || 'Custom Workout'}</span>
+              </div>
+            </td>
+            <td>${duration}</td>
+            <td>${workout.exercises?.length || 0}</td>
+            <td>
+              <button class="view-btn" data-id="${doc.id}">
+                <i class="fas fa-eye"></i>
+                <span>View</span>
+              </button>
+            </td>
+          `;
+          workoutHistory.appendChild(row);
+        });
+      } catch (error) {
+        console.error('Error loading workout history:', error);
+        workoutHistory.innerHTML = '<tr><td colspan="5">Failed to load workout history</td></tr>';
+      }
+    }
+
+    // Format duration (ms) to HH:MM:SS
+    function formatDuration(ms) {
+      if (!ms) return '--';
+      
+      const seconds = Math.floor((ms / 1000) % 60);
+      const minutes = Math.floor((ms / (1000 * 60)) % 60);
+      const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
+      
+      return [
+        hours.toString().padStart(2, '0'),
+        minutes.toString().padStart(2, '0'),
+        seconds.toString().padStart(2, '0')
+      ].join(':');
+    }
+
+    // Period button click handler
+    periodButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        periodButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        // In a real app, you would fetch data for the selected period
+        // For now, we'll just log the selected period
+        console.log('Selected period:', btn.textContent);
+      });
+    });
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', initProgressPage);
+  </script>
+</body>
+</html>

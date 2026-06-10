@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gymgorithm - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+    <script src="firebase-config.js"></script> <!-- External config file -->
+
+</head>
+<body>
+
+    <header>
+        <h1>Gymgorithm</h1>
+        <nav>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="#">Workouts</a>
+            <a href="#">Diet Plan</a>
+            <a href="#">Progress</a>
+            <a href="index.html">Logout</a>
+        </nav>
+    </header>
+
+    <section class="profile">
+        <img src="profile-placeholder.png" alt="Profile Picture">
+        <h2>Welcome, <span id="username">User</span>!</h2>
+        <p>Fitness Level: <strong>Intermediate</strong></p>
+        <p>Workout Streak: <strong>15 Days</strong></p>
+        <button class="btn">Update Profile</button>
+    </section>
+
+    <section class="stats">
+        <h3>Your Fitness Stats</h3>
+        <div class="stat-box">
+            <p>Weight: <strong>72kg</strong></p>
+            <p>Calories Burned Today: <strong>500 kcal</strong></p>
+            <p>Water Intake: <strong>2L</strong></p>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

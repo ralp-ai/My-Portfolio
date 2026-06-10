@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up - Gymgorithm</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #141e30, #243b55);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .signup-container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 40px;
+      border-radius: 15px;
+      width: 100%;
+      max-width: 450px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 28px;
+      color: #00d9ff;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 15px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #00d9ff;
+      box-shadow: 0 0 0 2px rgba(0, 217, 255, 0.2);
+    }
+
+    .password-container {
+      position: relative;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .password-strength {
+      height: 4px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      margin-top: 5px;
+      overflow: hidden;
+    }
+
+    .strength-meter {
+      height: 100%;
+      width: 0%;
+      background: #ff4757;
+      transition: all 0.3s;
+    }
+
+    .error-message {
+      color: #ff6b6b;
+      font-size: 14px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .btn {
+      padding: 15px;
+      background: #00d9ff;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 600;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn:hover {
+      background: #00aacc;
+      transform: translateY(-2px);
+    }
+
+    .btn:disabled {
+      background: #555;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 25px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .login-link a {
+      color: #00d9ff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    .address-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    @media (max-width: 480px) {
+      .signup-container {
+        padding: 30px 20px;
+      }
+      .address-group {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="signup-container">
+    <h2>Create Your Account</h2>
+    <form id="signup-form">
+      <div class="form-group">
+        <label for="fullname">Full Name</label>
+        <input type="text" id="fullname" placeholder="John Doe" required />
+        <div class="error-message" id="name-error"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="john@example.com" required />
+        <div class="error-message" id="email-error"></div>
+      </div>
+
+      <!-- Address Fields -->
+      <div class="form-group">
+        <label for="street">Street Address</label>
+        <input type="text" id="street" placeholder="123 Main St" required />
+        <div class="error-message" id="street-error"></div>
+      </div>
+
+      <div class="form-group address-group">
+        <div>
+          <label for="city">City</label>
+          <input type="text" id="city" placeholder="New York" required />
+          <div class="error-message" id="city-error"></div>
+        </div>
+        <div>
+          <label for="state">State/Province</label>
+          <input type="text" id="state" placeholder="NY" required />
+          <div class="error-message" id="state-error"></div>
+        </div>
+      </div>
+
+      <div class="form-group address-group">
+        <div>
+          <label for="zip">ZIP/Postal Code</label>
+          <input type="text" id="zip" placeholder="1234" required pattern="\d{4}" maxlength="4" />
+          <div class="error-message" id="zip-error"></div>
+        </div>
+        <div>
+          <label for="country">Country</label>
+          <select id="country" required>
+            <option value="" disabled selected>Select Country</option>
+            <option value="PHP">Phillipines</option>
+            <!-- Add more countries as needed -->
+          </select>
+          <div class="error-message" id="country-error"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-container">
+          <input type="password" id="password" placeholder="Enter a strong password" required />
+          <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+        </div>
+        <div class="password-strength">
+          <div class="strength-meter" id="strength-meter"></div>
+        </div>
+        <div class="error-message" id="password-error"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirm">Confirm Password</label>
+        <div class="password-container">
+          <input type="password" id="confirm" placeholder="Repeat password" required />
+          <i class="fas fa-eye toggle-password" id="toggleConfirm"></i>
+        </div>
+        <div class="error-message" id="confirm-error"></div>
+      </div>
+
+      <button class="btn" type="submit" id="submit-btn">
+        <span id="button-text">Sign Up</span>
+        <div id="spinner" class="spinner"></div>
+      </button>
+    </form>
+    <div class="login-link">
+      Already have an account? <a href="login.html">Login</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, db, analytics } from './firebase-config.js';
+    import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const form = document.getElementById('signup-form');
+    const passwordInput = document.getElementById('password');
+    const confirmInput = document.getElementById('confirm');
+    const strengthMeter = document.getElementById('strength-meter');
+    const togglePassword = document.getElementById('togglePassword');
+    const toggleConfirm = document.getElementById('toggleConfirm');
+    const submitBtn = document.getElementById('submit-btn');
+    const buttonText = document.getElementById('button-text');
+    const spinner = document.getElementById('spinner');
+
+    // Password visibility toggle
+    togglePassword.addEventListener('click', () => {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      togglePassword.classList.toggle('fa-eye-slash');
+    });
+
+    toggleConfirm.addEventListener('click', () => {
+      const type = confirmInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      confirmInput.setAttribute('type', type);
+      toggleConfirm.classList.toggle('fa-eye-slash');
+    });
+
+    // Password strength meter
+    passwordInput.addEventListener('input', () => {
+      const password = passwordInput.value;
+      const strength = calculateStrength(password);
+      updateStrengthMeter(strength);
+    });
+
+    function calculateStrength(password) {
+      let strength = 0;
+      
+      // Length check
+      if (password.length > 7) strength += 1;
+      if (password.length > 11) strength += 1;
+      
+      // Character diversity
+      if (/[A-Z]/.test(password)) strength += 1;
+      if (/[0-9]/.test(password)) strength += 1;
+      if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+      
+      return Math.min(strength, 5);
+    }
+
+    function updateStrengthMeter(strength) {
+      const percent = strength * 20;
+      strengthMeter.style.width = `${percent}%`;
+      
+      // Update color based on strength
+      if (strength <= 1) {
+        strengthMeter.style.background = '#ff4757';
+      } else if (strength <= 3) {
+        strengthMeter.style.background = '#ffa502';
+      } else {
+        strengthMeter.style.background = '#2ed573';
+      }
+    }
+
+    // Form validation
+    function showError(elementId, message) {
+      const errorElement = document.getElementById(elementId);
+      errorElement.textContent = message;
+      errorElement.style.display = 'block';
+    }
+
+    function hideError(elementId) {
+      const errorElement = document.getElementById(elementId);
+      errorElement.style.display = 'none';
+    }
+
+    function validateEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email);
+    }
+
+    function validateZip(zip) {
+      return /^\d{4}$/.test(zip);
+    }
+
+
+    // Form submission
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Reset errors
+      hideError('name-error');
+      hideError('email-error');
+      hideError('street-error');
+      hideError('city-error');
+      hideError('state-error');
+      hideError('zip-error');
+      hideError('country-error');
+      hideError('password-error');
+      hideError('confirm-error');
+
+      // Get values
+      const fullName = document.getElementById('fullname').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const street = document.getElementById('street').value.trim();
+      const city = document.getElementById('city').value.trim();
+      const state = document.getElementById('state').value.trim();
+      const zip = document.getElementById('zip').value.trim();
+      const country = document.getElementById('country').value;
+      const password = passwordInput.value;
+      const confirmPassword = confirmInput.value;
+
+      // Validate
+      let isValid = true;
+
+      if (fullName.length < 2) {
+        showError('name-error', 'Please enter a valid name');
+        isValid = false;
+      }
+
+      if (!validateEmail(email)) {
+        showError('email-error', 'Please enter a valid email');
+        isValid = false;
+      }
+
+      if (street.length < 3) {
+        showError('street-error', 'Please enter a valid street address');
+        isValid = false;
+      }
+
+      if (city.length < 2) {
+        showError('city-error', 'Please enter a valid city');
+        isValid = false;
+      }
+
+      if (state.length < 2) {
+        showError('state-error', 'Please enter a valid state/province');
+        isValid = false;
+      }
+
+      if (!validateZip(zip)) {
+        showError('zip-error', 'Please enter a valid ZIP/postal code');
+        isValid = false;
+      }
+
+      if (!country) {
+        showError('country-error', 'Please select a country');
+        isValid = false;
+      }
+
+      if (password.length < 8) {
+        showError('password-error', 'Password must be at least 8 characters');
+        isValid = false;
+      }
+
+      if (password !== confirmPassword) {
+        showError('confirm-error', 'Passwords do not match');
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      // Show loading state
+      submitBtn.disabled = true;
+      buttonText.textContent = 'Creating account...';
+      spinner.style.display = 'block';
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Store user data in Firestore
+        await setDoc(doc(db, "users", user.uid), {
+          fullName: fullName,
+          email: email,
+          uid: user.uid,
+          createdAt: new Date(),
+          address: {
+            street: street,
+            city: city,
+            state: state,
+            zip: zip,
+            country: country
+          },
+          profile: {
+            completed: false
+          }
+        });
+
+        // Redirect to profile completion
+        window.location.href = 'profile.html';
+      } catch (error) {
+        console.error("Signup error:", error);
+        
+        let errorMessage = "An error occurred. Please try again.";
+        switch(error.code) {
+          case 'auth/email-already-in-use':
+            errorMessage = "Email is already in use";
+            showError('email-error', errorMessage);
+            break;
+          case 'auth/invalid-email':
+            errorMessage = "Invalid email address";
+            showError('email-error', errorMessage);
+            break;
+          case 'auth/weak-password':
+            errorMessage = "Password is too weak";
+            showError('password-error', errorMessage);
+            break;
+          default:
+            alert(errorMessage);
+        }
+      } finally {
+        // Reset loading state
+        submitBtn.disabled = false;
+        buttonText.textContent = 'Sign Up';
+        spinner.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

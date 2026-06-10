@@ -1,0 +1,156 @@
+/* General Reset and Box Model */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Body Styles */
+body {
+    background: #1e1e2f;
+    color: white;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Header Styles */
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background: #222;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+}
+
+/* Hero Section */
+.hero {
+    padding: 80px 10%;
+}
+
+.hero h2 {
+    font-size: 2.5em;
+}
+
+/* Button Styles */
+.btn {
+    padding: 15px 30px;
+    background: #00d9ff;
+    border: none;
+    border-radius: 30px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+/* Features Section */
+.features {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 50px;
+}
+
+.feature {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    width: 250px;
+}
+
+/* Login and Signup Containers */
+.login-container, .signup-container {
+    background: #222;
+    padding: 40px;
+    border-radius: 10px;
+    text-align: center;
+    width: 300px;
+}
+
+.login-container h2, .signup-container h2 {
+    color: white;
+    margin-bottom: 20px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background: #00d9ff;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* Profile Section */
+.profile {
+    text-align: center;
+    padding: 50px;
+}
+
+.profile img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+/* Stats Section */
+.stats {
+    text-align: center;
+    padding: 20px;
+}
+
+.stat-box {
+    background: #222;
+    padding: 20px;
+    margin: 20px auto;
+    width: 300px;
+    border-radius: 10px;
+    color: white;
+}
+.error-border {
+    border: 1px solid red;
+  }
+
+
+.back-button {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    transition: color 0.2s ease;
+  }
+  
+.back-button i {
+    margin-right: 8px;
+  }
+  
+.back-button:hover {
+    color: #cccccc; /* Light gray on hover for subtle effect */
+    text-decoration: underline;
+  }
+  
+  
+
+  
+  

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gymgorithm - Smart Fitness App</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #141e30, #243b55);
+      color: white;
+      line-height: 1.6;
+    }
+
+    header {
+      padding: 20px 10%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: bold;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 80px 10%;
+    }
+
+    .hero h2 {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      padding: 15px 30px;
+      background: #00d9ff;
+      border: none;
+      border-radius: 30px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #00aacc;
+    }
+
+    .features {
+      padding: 50px 10%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+
+    .feature {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+    }
+
+    .feature h3 {
+      margin-bottom: 10px;
+      font-size: 22px;
+    }
+
+    .cta {
+      text-align: center;
+      padding: 50px 10%;
+    }
+
+    footer {
+      padding: 20px 10%;
+      text-align: center;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Gymgorithm</h1>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Features</a>
+      <a href="#">Login</a>
+      <a href="#">Sign Up</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h2>Where Algorithms Meet Gains</h2>
+    <p>Get smarter, personalized workouts with AI-powered plans. Track progress, optimize routines, and achieve goals — the tech way!</p>
+    <button class="btn" onclick="alert('Feature coming soon!')">Get Started</button>
+  </section>
+
+  <section class="features">
+    <div class="feature">
+      <h3>🤖 AI-Powered Workouts</h3>
+      <p>Smart routines tailored to your body and goals, updated dynamically.</p>
+    </div>
+    <div class="feature">
+      <h3>📈 Progress Analytics</h3>
+      <p>Visualize gains and optimize your fitness journey with real data.</p>
+    </div>
+    <div class="feature">
+      <h3>🍎 Nutrition Tracking</h3>
+      <p>Balance your workouts with custom meal plans and macro insights.</p>
+    </div>
+    <div class="feature">
+      <h3>💬 Community & Challenges</h3>
+      <p>Join fitness challenges and connect with others to stay motivated.</p>
+    </div>
+  </section>
+
+  <section class="cta">
+    <h2>Ready to Code Your Way to Fitness?</h2>
+    <p>Join Gymgorithm and start optimizing your health today!</p>
+    <button class="btn" onclick="alert('Sign up feature coming soon!')">Join Now</button>
+  </section>
+
+  <footer>
+    &copy; 2025 Gymgorithm. All rights reserved.
+  </footer>
+
+</body>
+</html>
