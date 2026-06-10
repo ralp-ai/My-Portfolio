@@ -1,7 +1,7 @@
 # My-Portfolio
 Projects
 
-#Gymgorithm
+# Gymgorithm
 Gymgorithm is a fitness and gym management web application designed to help users track workouts, manage fitness progress, and stay consistent with their fitness goals.
 
 #Description
@@ -17,7 +17,7 @@ Gymgorithm allows users to create profiles, log workouts, and monitor their fitn
 - Clean and user-friendly interface
 
 #AI Chatbot
-Gymgorithm includes an AI chatbot powered by **Ollama**, allowing users to:
+Gymgorithm includes an AI chatbot powered by Ollama, allowing users to:
 - Ask fitness-related questions
 - Get workout suggestions
 - Receive basic health and training guidance
@@ -32,6 +32,30 @@ Gymgorithm includes an AI chatbot powered by **Ollama**, allowing users to:
 - Ollama (AI chatbot integration)
 
 
+# Bottom Navigation
+This is my part in a group project
+#Bottom Navigation App 
 
+This is a simple Android project built using Jetpack Compose that demonstrates a Bottom Navigation UI with multiple screens.
+
+#Description
+The project focuses on implementing a modern Bottom Navigation Bar in Android using Jetpack Compose. It helps users switch between different sections of the app smoothly, following standard mobile UI design practices.
+
+#Features
+- Bottom Navigation Bar with multiple tabs
+- Home screen
+- Ads screen
+- Center action button (Plus/Add)
+- Notifications screen
+- Profile screen
+- Smooth navigation between screens
+- Clean and modern UI using Jetpack Compose
+
+#Technologies Used
+- Kotlin
+- Jetpack Compose
+- Android Studio
+- Material Design 3
+- Navigation Compose
 
 
